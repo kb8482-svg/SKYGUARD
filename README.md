@@ -83,7 +83,7 @@ Projekt sledi standardom sodobnega inženirstva programske opreme:
 + ``POST /storage/upload `` Nalaganje slik dogodkov v Min.io. 
 + ``GET /storage/image/{id}`` Pridobivanje povezave do slike.
 
- ###  Media Service (Port 8004)
+ ####  Media Service (Port 8005)
 
 ### 2.3 API Gateway (Port 8000 + NGINX 80/443)
 **Frontend:** NGINX | **Backend:** FastAPI (Python)
