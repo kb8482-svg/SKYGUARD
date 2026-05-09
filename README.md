@@ -12,18 +12,19 @@ Projekt NUKS 2026:
 
 # 2 OPIS IDEJE
 ** SkyGuard - Vremenski Načrtovalec 
-Moj projekt spletne aplikacije (cloud native app) za načrtovanje dogodkov na prostem glede na vremensko napoved. Uporabnikom omogoča iskanje lokacij, spremljanje vremena v realnem času ( mogoče prejemanje personaliziranih opozoril, če vreme ogroža njihove načrtovane aktivnosti).
+Moj projekt spletne aplikacije (cloud native app) za načrtovanje dogodkov na prostem glede na vremensko napoved. 
+Uporabnikom omogoča iskanje lokacij, spremljanje vremena v realnem času ( mogoče prejemanje personaliziranih opozoril, če vreme ogroža njihove načrtovane aktivnosti).
 
-CILJ : (za uporabnika) Aplikacija avtomatizira preverjanje vremenskih pogojev za specifične lokacije in čase dogodkov ter uporabnika opozori na morebitne neugodne razmere. 
+** CILJ : (za uporabnika) Aplikacija avtomatizira preverjanje vremenskih pogojev za specifične lokacije in čase dogodkov ter uporabnika opozori na morebitne neugodne razmere. 
 ** Arhitekturna zasnova sistema
 Sistem je zasnovan na sodobni arhitekturi mikrostoritev, ki so med seboj neodvisne in povezane preko centralne vstopne točke.
 
 
 <img width="836" height="558" alt="image" src="https://github.com/user-attachments/assets/059f6f98-2cbe-4d8e-ad8c-626870921cbf" />
 
-•	Frontend (Uporabniški vmesnik): Razvit v tehnologiji WEBapp (React), omogoča dostop preko spletnih in mobilnih naprav.
-•	API Gateway (Nginx): Služi kot varnostni in usmerjevalni sloj (proxy), ki vse zahtevke uporabnika varno posreduje ustreznim storitvam v ozadju.
-•	Mikrostoritve:
+* * Frontend (Uporabniški vmesnik): Razvit v tehnologiji WEBapp (React), omogoča dostop preko spletnih in mobilnih naprav.
+* * API Gateway (Nginx): Služi kot varnostni in usmerjevalni sloj (proxy), ki vse zahtevke uporabnika varno posreduje ustreznim storitvam v ozadju.
+* * Mikrostoritve:
 o	User & Event Service (Go/Node.js): Upravlja z avtentikacijo uporabnikov in poslovno logiko dogodkov.
 o	Weather Service (Python/FastAPI): Skrbi za komunikacijo z zunanjim OpenWeather API-jem in analizo vremenskih podatkov.
 o	Storage & S3 Service (Node.js): Upravlja z datotekami in slikami preko S3 protokola.
