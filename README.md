@@ -47,7 +47,8 @@ Projekt sledi standardom sodobnega inženirstva programske opreme:
   * User & Event service
   * Weather service
   * Storage
-  * * /frontend (React aplikacija)   
+ 
+ /frontend (React aplikacija)   
 
 
 /user-event-service (Go/Node.js)   
