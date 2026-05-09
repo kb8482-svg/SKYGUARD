@@ -56,4 +56,11 @@ Projekt sledi standardom sodobnega inženirstva programske opreme:
 + ``POST /events`` Ustvarjanje novega dogodka (lokacija, čas),
 + ``DELETE /events/{id} `` Brisanje načrtovanega dogodka.
 
+### Weather service
+
+ 
++ ``GET /weather/current`` Seznam vseh načrtovanih dogodkov uporabnika,
++ ``GET /weather/forecast`` Vremenska napoved za čas dogodka
++ `GET /weather/alerts ` Pridobivanje opozoril.
+
   
