@@ -34,7 +34,9 @@ Aplikacija uporablja hibridni model shranjevanja podatkov, kar zagotavlja hitros
 •	Relacijska baza (PostgreSQL): Shranjevanje strukturiranih podatkov o uporabnikih, njihovih profilih in podrobnostih dogodkov.
 •	Nerelacijska baza (MongoDB): Deluje kot predpomnilnik (cache) za vremenske podatke, kar zmanjšuje odvisnost od zunanjega API-ja in povečuje odzivnost sistema.
 •	Objektna shramba (Min.io): S3-združljiva shramba za trajno shranjevanje slik dogodkov in sistemskih dnevnikov (logov).
+
 # 4 Razvojni proces in nadzor (Observability)
 Projekt sledi standardom sodobnega inženirstva programske opreme:
+
 •	CI/CD (GitHub Actions): Celoten postopek gradnje Docker slik in objave aplikacije je avtomatiziran.
 •	Centralizirano logiranje in metriki: Za spremljanje stanja sistema se uporabljata Prometheus (metriki) in Grafana (vizualizacija logov), kar omogoča hiter odziv na morebitne napake.
