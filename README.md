@@ -48,3 +48,10 @@ Projekt sledi standardom sodobnega inženirstva programske opreme:
   * Weather service
   * Storage 
 ## 2.2 API dokumentacija
+### User & Event service
+Metoda,Pot (Endpoint),Opis
+POST,/auth/register,Registracija novega uporabnika.  
+POST,/auth/login,Prijava uporabnika in pridobitev žetona.  
+GET,/events,Seznam vseh načrtovanih dogodkov uporabnika.  
+POST,/events,"Ustvarjanje novega dogodka (lokacija, čas).  "
+DELETE,/events/{id},Brisanje načrtovanega dogodka.
