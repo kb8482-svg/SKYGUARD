@@ -5,6 +5,6 @@ Cloud-native end-to-end encrypted chat aplikacija, razvita v okviru predmeta NUK
 
 # 1 Povzetek ideje
 * * Projekt NUKS 2026
-** Vremenski načrtovalec dogodkov ali  » SKY GUARD«
+**Vremenski načrtovalec dogodkov ali  » SKY GUARD«
 
 <img width="666" height="444" alt="image" src="https://github.com/user-attachments/assets/3458d113-a33a-41d0-8eda-d342d7e440ac" />
