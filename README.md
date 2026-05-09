@@ -11,10 +11,11 @@ Projekt NUKS 2026:
 
 
 # 2 OPIS IDEJE
- (SkyGuard - Vremenski Načrtovalec) 
-Moj projekt spletne aplikacije (cloud native app) za načrtovanje dogodkov na prostem glede na vremensko napoved. Uporabnikom omogoča iskanje lokacij, spremljanje vremena v realnem času ( mogoče prejemanje personaliziranih opozoril, če vreme ogroža njihove načrtovane aktivnosti) .
+** SkyGuard - Vremenski Načrtovalec 
+Moj projekt spletne aplikacije (cloud native app) za načrtovanje dogodkov na prostem glede na vremensko napoved. Uporabnikom omogoča iskanje lokacij, spremljanje vremena v realnem času ( mogoče prejemanje personaliziranih opozoril, če vreme ogroža njihove načrtovane aktivnosti).
+
 CILJ : (za uporabnika) Aplikacija avtomatizira preverjanje vremenskih pogojev za specifične lokacije in čase dogodkov ter uporabnika opozori na morebitne neugodne razmere. 
-(2)	Arhitekturna zasnova sistema
+** Arhitekturna zasnova sistema
 Sistem je zasnovan na sodobni arhitekturi mikrostoritev, ki so med seboj neodvisne in povezane preko centralne vstopne točke.
 
 
