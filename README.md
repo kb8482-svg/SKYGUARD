@@ -84,22 +84,6 @@ Projekt sledi standardom sodobnega inženirstva programske opreme:
 + ``GET /storage/image/{id}`` Pridobivanje povezave do slike.
 
  ###  Media Service (Port 8004)
-**Language:** Python (FastAPI) | **Storage:** MinIO S3 (Internal Only)
-
-Responsibilities:
-- Profile picture upload/download management
-- Generate signed S3 URLs for secure access (1-hour expiration)
-- Support multiple image formats (JPEG, PNG, WebP, GIF)
-- Track metadata (size, upload date, content type)
-- Fallback URLs when MinIO unavailable
-
-**Key Endpoints:**
-- `POST /api/profiles/{username}/picture` - Get upload URL
-- `POST /api/profiles/{username}/picture/complete` - Mark upload complete
-- `GET /api/profiles/{username}/picture` - Get download URL
-- `GET /api/profiles/{username}/picture/metadata` - Get image metadata
-
-**Detailed Profile Picture API:** [PROFILE_PICTURE_API.md](docs/PROFILE_PICTURE_API.md)
 
 ### 4.5 API Gateway (Port 8000 + NGINX 80/443)
 **Frontend:** NGINX | **Backend:** FastAPI (Python)
