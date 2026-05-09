@@ -10,7 +10,7 @@ Projekt NUKS 2026:
 <img width="666" height="444" alt="image" src="https://github.com/user-attachments/assets/3458d113-a33a-41d0-8eda-d342d7e440ac" />
 
 
-# 2 OPIS IDEJE
+## 2 OPIS IDEJE
 ** SkyGuard - Vremenski Načrtovalec 
 Moj projekt spletne aplikacije (cloud native app) za načrtovanje dogodkov na prostem glede na vremensko napoved. 
 Uporabnikom omogoča iskanje lokacij, spremljanje vremena v realnem času ( mogoče prejemanje personaliziranih opozoril, če vreme ogroža njihove načrtovane aktivnosti).
