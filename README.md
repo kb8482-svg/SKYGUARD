@@ -85,39 +85,7 @@ Projekt sledi standardom sodobnega inženirstva programske opreme:
 
  ###  Media Service (Port 8004)
 
-### 4.5 API Gateway (Port 8000 + NGINX 80/443)
+### 2.3 API Gateway (Port 8000 + NGINX 80/443)
 **Frontend:** NGINX | **Backend:** FastAPI (Python)
 
-Responsibilities:
-- Single entry point for all client requests
-- Reverse proxy to microservices
-- WebSocket upgrade for realtime message delivery
-- JWT token validation
-- Rate limiting and security headers
-- CORS handling
-- Request routing and forwarding
-
-**Internal Service URLs (Docker network):**
-```
-http://e2ee_auth_service:8001
-http://e2ee_chat_service:8002
-http://e2ee_message_service:8003
-http://e2ee_media_service:8004
-```
-
-### 4.6 Monitoring & Logging Stack
-- **Prometheus** (Port 9090) - Metrics collection
-- **Grafana** (Port 3000) - Dashboards & visualization
-- **Loki** (Port 3100) - Log aggregation
-- **Promtail** - Log shipping agent
-- **Alertmanager** (Port 9093) - Alert management
-- **Node Exporter** (Port 9100) - Host metrics
-- **cAdvisor** (Port 8080) - Container metrics
-
-Access from browser:
-```
-Grafana:      http://localhost:3000 (admin/admin)
-Prometheus:   http://localhost:9090
-Alertmanager: http://localhost:9093
-```
 
