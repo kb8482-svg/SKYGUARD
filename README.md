@@ -10,7 +10,7 @@ Projekt NUKS 2026:
 <img width="666" height="444" alt="image" src="https://github.com/user-attachments/assets/3458d113-a33a-41d0-8eda-d342d7e440ac" />
 
 
-## 2. OPIS IDEJE
+## 1.2 OPIS IDEJE
 ** SkyGuard - Vremenski Načrtovalec 
 Moj projekt spletne aplikacije (cloud native app) za načrtovanje dogodkov na prostem glede na vremensko napoved. 
 Uporabnikom omogoča iskanje lokacij, spremljanje vremena v realnem času ( mogoče prejemanje personaliziranih opozoril, če vreme ogroža njihove načrtovane aktivnosti).
@@ -29,20 +29,22 @@ o	User & Event Service (Go/Node.js): Upravlja z avtentikacijo uporabnikov in pos
 o	Weather Service (Python/FastAPI): Skrbi za komunikacijo z zunanjim OpenWeather API-jem in analizo vremenskih podatkov.
 o	Storage & S3 Service (Node.js): Upravlja z datotekami in slikami preko S3 protokola.
 
-## 3. Tehnološki sklad in podatkovni sloj
+## 1.3 Tehnološki sklad in podatkovni sloj
 Aplikacija uporablja hibridni model shranjevanja podatkov, kar zagotavlja hitrost in integriteto:
 •	Relacijska baza (PostgreSQL): Shranjevanje strukturiranih podatkov o uporabnikih, njihovih profilih in podrobnostih dogodkov.
 •	Nerelacijska baza (MongoDB): Deluje kot predpomnilnik (cache) za vremenske podatke, kar zmanjšuje odvisnost od zunanjega API-ja in povečuje odzivnost sistema.
 •	Objektna shramba (Min.io): S3-združljiva shramba za trajno shranjevanje slik dogodkov in sistemskih dnevnikov (logov).
 
-## 4. Razvojni proces in nadzor (Observability)
+## 1.4 Razvojni proces in nadzor (Observability)
 Projekt sledi standardom sodobnega inženirstva programske opreme:
 
 •	CI/CD (GitHub Actions): Celoten postopek gradnje Docker slik in objave aplikacije je avtomatiziran.
 •	Centralizirano logiranje in metriki: Za spremljanje stanja sistema se uporabljata Prometheus (metriki) in Grafana (vizualizacija logov), kar omogoča hiter odziv na morebitne napake.
 
 # 2 API klici in plan segnemtcije storitev
-## 1. Korak : Plan segnemtacije mikrostoritev
+## 2.1 Koraki : Plan segnemtacije mikrostoritev
+
   * User & Event service
   * Weather service
   * Storage 
+## 2.2 API dokumentacija
