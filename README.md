@@ -1,5 +1,6 @@
 # NUKS-Vaje, Projekt
-testni repo za vaje
+** SKYGUARD **
+**pNg - domena
  #
 Cloud-native end-to-end encrypted chat aplikacija, razvita v okviru predmeta NUKS. Projekt sledi zahtevam predmeta: mikrostoritve, Docker Compose, API gateway, relacijska + nerelacijska baza, centralizirano logiranje, CI/CD in uporaba S3 API.
 
@@ -88,4 +89,6 @@ Projekt sledi standardom sodobnega inženirstva programske opreme:
 ### 2.3 API Gateway (Port 8000 + NGINX 80/443)
 **Frontend:** NGINX | **Backend:** FastAPI (Python)
 
+# domena 
+- pejmoneglejmo.me
 

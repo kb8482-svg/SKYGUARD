@@ -1,6 +1,0 @@
-fastapi
-uvicorn
-sqlalchemy
-aiosqlite
-pydantic
-fastapi-versioning== 0.10.0
