@@ -1,41 +1,44 @@
-version: '3.8'
+version: "3.9"
 
 services:
   api-gateway:
     image: nginx:alpine
+    container_name: skyguard_api_gateway
     ports:
-      - "8000:8000"
-      - "80:80"
+      - "8000:80"
     volumes:
-      - ./api-gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./api-gateway/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - user-service
-      - weather-service
       - storage-service
-      
+      - weather-service
+
   user-service:
     image: node:18-alpine
+    container_name: skyguard_user_service
     working_dir: /app
     volumes:
       - ./user-service:/app
+    expose:
+      - "5001"
     command: sh -c "npm install && npm start"
-    ports:
-      - "5001:5001"
-
-  weather-service:
-    image: python:3.10-slim
-    working_dir: /app
-    volumes:
-      - ./weather-service:/app
-    command: sh -c "pip install fastapi uvicorn && uvicorn main:app --host 0.0.0.0 --port 5002"
-    ports:
-      - "5002:5002"
 
   storage-service:
     image: node:18-alpine
+    container_name: skyguard_storage_service
     working_dir: /app
     volumes:
       - ./storage-service:/app
+    expose:
+      - "5002"
     command: sh -c "npm install && npm start"
-    ports:
-      - "5003:5003"
+
+  weather-service:
+    image: python:3.10-slim
+    container_name: skyguard_weather_service
+    working_dir: /app
+    volumes:
+      - ./weather-service:/app
+    expose:
+      - "5002"
+    command: sh -c "pip install fastapi uvicorn && uvicorn main:app --host 0.0.0.0 --port 5002"
