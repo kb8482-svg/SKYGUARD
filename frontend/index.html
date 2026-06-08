@@ -33,6 +33,13 @@
     </div>
 
     <div class="box">
+        <h3>📤 Upload datoteke na Min.io</h3>
+        <input type="file" id="fileInput" accept="image/*">
+        <button onclick="uploadFile()">Upload sliku</button>
+        <div id="uploadResult"></div>
+    </div>
+
+    <div class="box">
         <h3>Podatki o vremenu</h3>
         <button onclick="fetchWeather()" style="background: #ff2e63;">Pridobi podatke o vremenu</button>
         <div id="weatherResult"></div>
@@ -41,38 +48,84 @@
 
 <script>
     let token = null;
+    
     // Funkcija za klic Login / Register mikrostoritve skozi Nginx
     async function handleAuth(endpoint) {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
 
-    const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-    });
+        const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
 
-    const data = await res.json();
+        const data = await res.json();
+        const statusDiv = document.getElementById('status');
 
-    if (res.ok) {
-        if (data.token) {
-            token = data.token;
-            localStorage.setItem("token", token);
+        if (res.ok) {
+            if (data.token) {
+                token = data.token;
+                localStorage.setItem("token", token);
+            }
+            statusDiv.className = 'success';
+            statusDiv.innerText = "✅ " + data.message;
+        } else {
+            statusDiv.className = 'error';
+            statusDiv.innerText = "❌ " + data.message;
         }
-        alert("OK: " + data.message);
-    } else {
-        alert(data.message);
     }
-}
 
     // Funkcija za klic Vremenske mikrostoritve skozi Nginx
     async function fetchWeather() {
-    const res = await fetch('/weather/');
-    const data = await res.json();
+        try {
+            const res = await fetch('/weather/');
+            const data = await res.json();
 
-    document.getElementById('weatherResult').innerText =
-        `Temp: ${data.temperature}°C | ${data.summary}`;
-}
+            document.getElementById('weatherResult').className = 'success';
+            document.getElementById('weatherResult').innerText =
+                `🌡️ Temp: ${data.temperature}°C | ${data.summary}`;
+        } catch (err) {
+            document.getElementById('weatherResult').className = 'error';
+            document.getElementById('weatherResult').innerText = "❌ Greška pri dohvaćanju vremenske prognoze";
+        }
+    }
+
+    // Funkcija za upload datoteke na Min.io kroz Storage Service
+    async function uploadFile() {
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+
+        if (!file) {
+            alert("⚠️ Molim odaberi datoteku!");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const res = await fetch('/storage/upload/', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await res.json();
+            const uploadDiv = document.getElementById('uploadResult');
+
+            if (res.ok) {
+                uploadDiv.className = 'success';
+                uploadDiv.innerHTML = `✅ Upload uspješan!<br><a href="${data.url}" target="_blank">Vidi sliku</a>`;
+            } else {
+                uploadDiv.className = 'error';
+                uploadDiv.innerText = "❌ " + (data.message || "Upload neuspješan");
+            }
+        } catch (err) {
+            document.getElementById('uploadResult').className = 'error';
+            document.getElementById('uploadResult').innerText = "❌ Greška pri uploadu";
+            console.error(err);
+        }
+    }
 </script>
 
 </body>
