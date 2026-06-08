@@ -1,0 +1,19 @@
+async function handleAuth(endpoint, successMessage) {
+
+    const u = document.getElementById('username').value;
+
+    const p = document.getElementById('password').value;
+
+    const statusDiv = document.getElementById('status');
+
+    if (!u || !p) {
+
+        statusDiv.className = 'error';
+
+        statusDiv.innerText = 'Izpolni vsa polja.';
+
+        return;
+    }
+
+    ...
+}

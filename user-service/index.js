@@ -1,14 +1,75 @@
 const express = require('express');
+const { Pool } = require('pg');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+
 const app = express();
 app.use(express.json());
 
-const PORT = 5001;
+const pool = new Pool({
+  user: 'skyguard_user',
+  host: 'postgres-db',
+  database: 'skyguard_auth',
+  password: 'password123',
+  port: 5432,
+});
 
-// API klici za 2. mejnik
-app.post('/register', (req, res) => res.status(201).json({ message: "Uporabnik registriran" }));
-app.post('/login', (req, res) => res.json({ token: "fake-jwt-token" }));
-app.get('/events', (req, res) => res.json([{ id: 1, name: "SkyGuard Event", location: "Ljubljana" }]));
-app.post('/events', (req, res) => res.status(201).json({ message: "Dogodek ustvarjen", data: req.body }));
-app.delete('/events/:id', (req, res) => res.json({ message: `Dogodek ${req.params.id} izbrisan` }));
+const SECRET = "skyguard-secret";
 
-app.listen(PORT, () => console.log(`User service teče na portu ${PORT}`));
+// CREATE TABLE
+pool.query(`
+CREATE TABLE IF NOT EXISTS users (
+id SERIAL PRIMARY KEY,
+username TEXT UNIQUE,
+password TEXT
+)
+`);
+
+// REGISTER
+app.post('/auth/register', async (req, res) => {
+    const { username, password } = req.body;
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    try {
+        await pool.query(
+            'INSERT INTO users (username, password) VALUES ($1, $2)',
+            [username, hashed]
+        );
+
+        res.status(201).json({ message: 'Registracija uspešna!' });
+
+    } catch (err) {
+        res.status(400).json({ message: 'Napaka ali uporabnik obstaja' });
+    }
+});
+
+// LOGIN
+app.post('/auth/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    const result = await pool.query(
+        'SELECT * FROM users WHERE username=$1',
+        [username]
+    );
+
+    if (result.rows.length === 0) {
+        return res.status(401).json({ message: 'Uporabnik ne obstaja' });
+    }
+
+    const user = result.rows[0];
+
+    const valid = await bcrypt.compare(password, user.password);
+
+    if (!valid) {
+        return res.status(401).json({ message: 'Napačno geslo' });
+    }
+
+    const token = jwt.sign({ user: username }, SECRET, { expiresIn: "1h" });
+
+    res.json({ message: 'Login OK', token });
+});
+
+app.listen(5001, () => {
+    console.log("User service running on 5001");
+});

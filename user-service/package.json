@@ -2,6 +2,13 @@
   "name": "user-service",
   "version": "1.0.0",
   "main": "index.js",
-  "dependencies": { "express": "^4.19.2" },
-  "scripts": { "start": "node index.js" }
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.21.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
 }

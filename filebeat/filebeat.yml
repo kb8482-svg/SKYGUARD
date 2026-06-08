@@ -1,0 +1,13 @@
+filebeat.inputs:
+  - type: filestream
+    id: items-app-logs
+    enabled: true
+    paths:
+      - /logs/items-app.log
+    fields:
+      environment: lab
+      app: items-app
+    fields_under_root: true
+
+output.logstash:
+  hosts: ["logstash:5044"]

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKYGUARD – Nadzorna Plošča</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1a1a1a; color: white; padding: 40px; }
+        .container { max-width: 500px; margin: 0 auto; background: #2a2a2a; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h2, h3 { color: #00adb5; text-align: center; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: none; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #00adb5; border: none; color: white; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #007a80; }
+        .box { border: 1px solid #444; padding: 15px; margin-bottom: 20px; border-radius: 6px; }
+        #status, #weatherResult { margin-top: 15px; padding: 10px; border-radius: 4px; text-align: center; font-weight: bold; }
+        .success { background: #28a745; color: white; }
+        .error { background: #dc3545; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🛡️ SKYGUARD Sistem</h2>
+    <hr style="border-color: #444;">
+
+    <div class="box" id="authBox">
+        <h3>Prijava / Registracija</h3>
+        <input type="text" id="username" placeholder="Uporabniško ime">
+        <input type="password" id="password" placeholder="Geslo">
+        <button onclick="handleAuth('/auth/register', 'Registracija uspešna!')">Registriraj se</button>
+        <button onclick="handleAuth('/auth/login', 'Prijava uspešna!')" style="background: #393e46;">Prijavi se</button>
+        <div id="status"></div>
+    </div>
+
+    <div class="box">
+        <h3>Podatki o vremenu</h3>
+        <button onclick="fetchWeather()" style="background: #ff2e63;">Pridobi podatke o vremenu</button>
+        <div id="weatherResult"></div>
+    </div>
+</div>
+
+<script>
+    let token = null;
+    // Funkcija za klic Login / Register mikrostoritve skozi Nginx
+    async function handleAuth(endpoint) {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+        if (data.token) {
+            token = data.token;
+            localStorage.setItem("token", token);
+        }
+        alert("OK: " + data.message);
+    } else {
+        alert(data.message);
+    }
+}
+
+    // Funkcija za klic Vremenske mikrostoritve skozi Nginx
+    async function fetchWeather() {
+    const res = await fetch('/weather/');
+    const data = await res.json();
+
+    document.getElementById('weatherResult').innerText =
+        `Temp: ${data.temperature}°C | ${data.summary}`;
+}
+</script>
+
+</body>
+</html>
