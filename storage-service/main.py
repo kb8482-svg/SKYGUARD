@@ -1,5 +1,9 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi.responses import StreamingResponse
+from botocore.exceptions import ClientError
 import boto3
+import io
+import time
 import uuid
 
 app = FastAPI()
@@ -21,6 +25,30 @@ s3 = boto3.client(
 )
 
 
+def ensure_bucket():
+    for attempt in range(10):
+        try:
+            s3.head_bucket(Bucket=BUCKET)
+            return
+        except ClientError as err:
+            error_code = err.response.get("Error", {}).get("Code")
+            if error_code in ["404", "NoSuchBucket"]:
+                s3.create_bucket(Bucket=BUCKET)
+                return
+            if attempt == 9:
+                raise
+        except Exception:
+            if attempt == 9:
+                raise
+
+        time.sleep(2)
+
+
+@app.on_event("startup")
+def startup():
+    ensure_bucket()
+
+
 @app.get("/")
 def root():
     return {"status": "storage OK"}
@@ -29,6 +57,7 @@ def root():
 @app.post("/upload/")
 async def upload(file: UploadFile = File(...)):
 
+    ensure_bucket()
     file_id = str(uuid.uuid4())
     file_name = f"{file_id}-{file.filename}"
 
@@ -37,12 +66,27 @@ async def upload(file: UploadFile = File(...)):
     s3.put_object(
         Bucket=BUCKET,
         Key=file_name,
-        Body=content
+        Body=content,
+        ContentType=file.content_type or "application/octet-stream"
     )
 
-    url = f"{MINIO_URL}/{BUCKET}/{file_name}"
+    url = f"/storage/image/{file_name}"
 
     return {
         "message": "upload OK",
+        "key": file_name,
         "url": url
     }
+
+
+@app.get("/image/{key}")
+def image(key: str):
+    try:
+        obj = s3.get_object(Bucket=BUCKET, Key=key)
+    except ClientError:
+        raise HTTPException(status_code=404, detail="Datoteka ne obstaja")
+
+    return StreamingResponse(
+        io.BytesIO(obj["Body"].read()),
+        media_type=obj.get("ContentType") or "application/octet-stream"
+    )

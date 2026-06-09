@@ -5,16 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SKYGUARD – Nadzorna Plošča</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1a1a1a; color: white; padding: 40px; }
-        .container { max-width: 500px; margin: 0 auto; background: #2a2a2a; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        h2, h3 { color: #00adb5; text-align: center; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: none; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #00adb5; border: none; color: white; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 10px; }
-        button:hover { background: #007a80; }
-        .box { border: 1px solid #444; padding: 15px; margin-bottom: 20px; border-radius: 6px; }
-        #status, #weatherResult { margin-top: 15px; padding: 10px; border-radius: 4px; text-align: center; font-weight: bold; }
-        .success { background: #28a745; color: white; }
-        .error { background: #dc3545; color: white; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0b3d3c 0%, #135f5b 40%, #5aa68d 100%); color: #eef7f5; padding: 24px; }
+        .container { max-width: 760px; margin: 0 auto; background: rgba(7, 50, 48, 0.96); padding: 30px; border-radius: 8px; box-shadow: 0 4px 25px rgba(0,0,0,0.55); }
+        h2, h3 { color: #cde7d0; text-align: center; }
+        input, textarea, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid rgba(171, 217, 194, 0.45); border-radius: 4px; box-sizing: border-box; background: rgba(255,255,255,0.08); color: #eef7f5; }
+        button { width: 100%; padding: 12px; background: #2a7a68; border: none; color: white; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #1f6454; }
+        textarea { min-height: 70px; resize: vertical; }
+        .box { border: 1px solid rgba(139, 208, 184, 0.35); padding: 15px; margin-bottom: 20px; border-radius: 6px; background: rgba(12, 59, 58, 0.92); }
+        .auth-box { background: rgba(13, 53, 54, 0.95); border-color: rgba(85, 193, 167, 0.55); }
+        .upload-box { background: rgba(86, 48, 104, 0.92); border-color: rgba(185, 142, 226, 0.55); }
+        .weather-box { background: rgba(18, 55, 89, 0.94); border-color: rgba(94, 154, 220, 0.65); }
+        .event-box { background: rgba(36, 69, 51, 0.94); border-color: rgba(146, 206, 141, 0.55); }
+        .upload-box input, .upload-box button { background: rgba(255,255,255,0.08); }
+        .weather-box input, .weather-box select, .weather-box button, .weather-box .legendItem { background: rgba(255,255,255,0.08); }
+        .event-box input, .event-box textarea, .event-box select, .event-box button { background: rgba(255,255,255,0.08); }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .hidden { display: none; }
+        #status, #weatherResult, #uploadResult, #eventStatus { margin-top: 15px; padding: 10px; border-radius: 4px; text-align: center; font-weight: bold; }
+        .success { background: #24806d; color: white; }
+        .error { background: #b83245; color: white; }
+        .eventItem { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; border-top: 1px solid rgba(171, 217, 194, 0.35); padding: 12px 0; }
+        .eventItem button { width: auto; margin: 0; background: #4b9b7f; }
+        .eventItem button:hover { background: #3c816b; }
+        .inlineField { display: flex; align-items: center; gap: 10px; }
+        .fieldLabelInline { min-width: 38px; color: #d0f1df; font-size: 1rem; font-weight: 700; }
+        .inlineField input { flex: 1; }
+        .weatherSummary { font-size: 1rem; margin-top: 12px; color: #d7e8ff; }
+        .weatherDetails { margin-top: 10px; line-height: 1.6; color: #e7f2ff; }
+        .forecastList { display: grid; gap: 10px; margin-top: 14px; }
+        .weatherLegend { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-top: 14px; }
+        .legendItem { border-radius: 10px; padding: 10px 12px; border: 1px solid rgba(226, 236, 255, 0.16); color: #eef7f5; font-weight: 600; }
+        .legendItem span { margin-left: 6px; color: #c9e4ff; }
+        .forecastCard { padding: 12px; border-radius: 10px; background: rgba(255,255,255,0.12); border: 1px solid rgba(114, 169, 143, 0.35); color: #113f33; }
+        .forecastCard h4 { margin: 0 0 6px; font-size: 1rem; color: #0f3d2f; }
+        .forecastCard .muted { color: #134339; }
+        .weatherRadar img { width: 100%; border-radius: 10px; margin-top: 12px; }
+        .weatherRadarNote { margin-top: 8px; color: #0f3d2f; }
+        .muted { color: #b7d7c7; font-size: 0.95rem; }
+        .dashboard-banner { background: rgba(238, 251, 241, 0.95); color: #125a42; border: 1px solid rgba(148, 200, 171, 0.75); border-radius: 8px; padding: 14px 16px; margin-bottom: 20px; text-align: center; font-weight: 600; }
+        .appDashboard { background: linear-gradient(180deg, #fbf5ff 0%, #fff8f3 100%); padding: 22px; border-radius: 14px; box-shadow: 0 10px 30px rgba(141, 97, 209, 0.12); }
+        .appDashboard .box { background: rgba(255,255,255,0.92); border-color: #e7d7ff; color: #3b2a50; }
+        .appDashboard button { background: #c2a6ff; border: none; color: #3c1f76; }
+        .appDashboard button:hover { background: #b088ff; }
+        a { color: #7d5fff; }
+        @media (max-width: 640px) {
+            body { padding: 12px; }
+            .container { padding: 18px; }
+            .row { grid-template-columns: 1fr; gap: 0; }
+            .eventItem { grid-template-columns: 1fr; }
+            .eventItem button { width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -23,7 +64,7 @@
     <h2>🛡️ SKYGUARD Sistem</h2>
     <hr style="border-color: #444;">
 
-    <div class="box" id="authBox">
+    <div class="box auth-box" id="authBox">
         <h3>Prijava / Registracija</h3>
         <input type="text" id="username" placeholder="Uporabniško ime">
         <input type="password" id="password" placeholder="Geslo">
@@ -32,23 +73,184 @@
         <div id="status"></div>
     </div>
 
-    <div class="box">
-        <h3>📤 Upload datoteke na Min.io</h3>
-        <input type="file" id="fileInput" accept="image/*">
-        <button onclick="uploadFile()">Upload sliku</button>
-        <div id="uploadResult"></div>
-    </div>
+    <div id="appDashboard" class="hidden">
+        <div id="userBanner" class="dashboard-banner hidden"></div>
+        <div class="box upload-box">
+            <h3>📤 Upload datoteke na Min.io</h3>
+            <input type="file" id="fileInput" accept="image/*">
+            <button onclick="uploadFile()">Upload sliku</button>
+            <div id="uploadResult"></div>
+        </div>
 
-    <div class="box">
-        <h3>Podatki o vremenu</h3>
-        <button onclick="fetchWeather()" style="background: #ff2e63;">Pridobi podatke o vremenu</button>
-        <div id="weatherResult"></div>
+        <div class="box weather-box">
+            <h3>Podatki o vremenu</h3>
+            <div class="row">
+                <select id="weatherLocation" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #d8c0e8; background: #fcf5ff; color: #4f2a6e;">
+                    <option value="ljubljana">Ljubljana</option>
+                    <option value="maribor">Maribor</option>
+                    <option value="koper">Koper</option>
+                    <option value="piran">Piran</option>
+                    <option value="bled">Bled</option>
+                    <option value="celje">Celje</option>
+                    <option value="pag">Pag</option>
+                    <option value="krk">Krk</option>
+                    <option value="losinj">Lošinj</option>
+                </select>
+            </div>
+            <button onclick="fetchWeather()" style="background: #ff9ec2; color: #3c1f76;">Pridobi podatke o vremenu</button>
+            <div class="weatherLegend">
+                <div class="legendItem">☀️ <span>Sončno</span></div>
+                <div class="legendItem">🌤️ <span>Delno sončno</span></div>
+                <div class="legendItem">☁️ <span>Oblačno</span></div>
+                <div class="legendItem">🌧️ <span>Dež</span></div>
+                <div class="legendItem">⛈️ <span>Nevihta</span></div>
+                <div class="legendItem">❄️ <span>Sneg</span></div>
+            </div>
+            <div id="weatherResult"></div>
+            <div id="weatherDetails" class="weatherDetails"></div>
+            <div id="weatherForecast" class="forecastList"></div>
+            <div id="weatherRadarWrapper" class="weatherRadar hidden">
+                <h4>Radar</h4>
+                <img id="weatherRadar" alt="Radar" />
+                <div id="radarNote" class="weatherRadarNote muted"></div>
+            </div>
+        </div>
+
+        <div class="box event-box" id="eventBox">
+            <h3>Načrtovani dogodki</h3>
+            <input type="text" id="eventTitle" placeholder="Naziv dogodka">
+            <div class="row">
+                <select id="eventLocation" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #d8c0e8; background: #fcf5ff; color: #4f2a6e;">
+                    <option value="Ljubljana">Ljubljana</option>
+                    <option value="Maribor">Maribor</option>
+                    <option value="Koper">Koper</option>
+                    <option value="Piran">Piran</option>
+                    <option value="Bled">Bled</option>
+                    <option value="Celje">Celje</option>
+                    <option value="Pag">Pag</option>
+                    <option value="Krk">Krk</option>
+                    <option value="Lošinj">Lošinj</option>
+                </select>
+                <div class="inlineField">
+                    <label for="eventStart" class="fieldLabelInline">Od</label>
+                    <input type="datetime-local" id="eventStart" placeholder="Začetek dogodka">
+                </div>
+            </div>
+            <div class="row">
+                <div class="inlineField">
+                    <label for="eventEnd" class="fieldLabelInline">Do</label>
+                    <input type="datetime-local" id="eventEnd" placeholder="Konec dogodka">
+                </div>
+                <div></div>
+            </div>
+            <textarea id="eventNotes" placeholder="Opombe"></textarea>
+            <button onclick="createEvent()">Dodaj dogodek</button>
+            <button onclick="loadEvents()" style="background: #445069;">Osveži seznam</button>
+            <button onclick="logout()" style="background: #b83245;">Odjava</button>
+            <div id="eventStatus"></div>
+            <div id="eventsList"></div>
+        </div>
     </div>
 </div>
 
 <script>
     let token = null;
-    
+    let currentUser = null;
+
+    function setUserBanner(name) {
+        const banner = document.getElementById('userBanner');
+        if (name) {
+            banner.classList.remove('hidden');
+            banner.innerText = `Prijavljen kot: ${escapeHtml(name)}`;
+        } else {
+            banner.classList.add('hidden');
+            banner.innerText = '';
+        }
+    }
+
+    function setDashboardAccess(isLoggedIn) {
+        const authBox = document.getElementById('authBox');
+        const appDashboard = document.getElementById('appDashboard');
+        const eventStatus = document.getElementById('eventStatus');
+        const eventsList = document.getElementById('eventsList');
+        const weatherResult = document.getElementById('weatherResult');
+        const uploadResult = document.getElementById('uploadResult');
+
+        authBox.classList.toggle('hidden', isLoggedIn);
+        appDashboard.classList.toggle('hidden', !isLoggedIn);
+        setUserBanner(isLoggedIn ? currentUser : null);
+
+        if (!isLoggedIn) {
+            eventStatus.className = '';
+            eventStatus.innerText = '';
+            eventsList.innerHTML = '';
+            weatherResult.className = '';
+            weatherResult.innerText = '';
+            uploadResult.className = '';
+            uploadResult.innerText = '';
+            document.getElementById('fileInput').value = '';
+        }
+    }
+
+    const weatherLocations = {
+        ljubljana: { latitude: 46.0569, longitude: 14.5058, name: 'Ljubljana' },
+        maribor: { latitude: 46.5547, longitude: 15.6459, name: 'Maribor' },
+        koper: { latitude: 45.5469, longitude: 13.7290, name: 'Koper' },
+        piran: { latitude: 45.5285, longitude: 13.5692, name: 'Piran' },
+        bled: { latitude: 46.3620, longitude: 14.0941, name: 'Bled' },
+        celje: { latitude: 46.2389, longitude: 15.2679, name: 'Celje' },
+        pag: { latitude: 44.4908, longitude: 14.9568, name: 'Pag' },
+        krk: { latitude: 45.0207, longitude: 14.5695, name: 'Krk' },
+        losinj: { latitude: 44.5319, longitude: 14.4491, name: 'Lošinj' }
+    };
+
+    const weatherCodeIcons = {
+        0: '☀️',
+        1: '🌤️',
+        2: '⛅',
+        3: '☁️',
+        45: '🌫️',
+        48: '🌫️',
+        51: '🌦️',
+        53: '🌦️',
+        55: '🌧️',
+        56: '🌧️',
+        57: '🌧️',
+        61: '🌧️',
+        63: '🌧️',
+        65: '🌧️',
+        66: '🌨️',
+        67: '🌨️',
+        71: '❄️',
+        73: '❄️',
+        75: '❄️',
+        77: '🌨️',
+        80: '🌦️',
+        81: '🌧️',
+        82: '⛈️',
+        85: '🌨️',
+        86: '🌨️',
+        95: '⛈️',
+        96: '⛈️',
+        99: '⛈️'
+    };
+
+    function getWeatherIcon(code) {
+        return weatherCodeIcons[code] || '🌡️';
+    }
+
+    function ensureAuth() {
+        token = token || localStorage.getItem('token');
+        if (!token) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'error';
+            statusDiv.innerText = '❌ Najprej se prijavi ali registriraj.';
+            setDashboardAccess(false);
+            return false;
+        }
+        return true;
+    }
+
     // Funkcija za klic Login / Register mikrostoritve skozi Nginx
     async function handleAuth(endpoint) {
         const username = document.getElementById('username').value;
@@ -66,7 +268,12 @@
         if (res.ok) {
             if (data.token) {
                 token = data.token;
+                currentUser = username;
                 localStorage.setItem("token", token);
+                localStorage.setItem("username", currentUser);
+                setDashboardAccess(true);
+                setUserBanner(currentUser);
+                loadEvents();
             }
             statusDiv.className = 'success';
             statusDiv.innerText = "✅ " + data.message;
@@ -78,21 +285,234 @@
 
     // Funkcija za klic Vremenske mikrostoritve skozi Nginx
     async function fetchWeather() {
+        if (!ensureAuth()) {
+            return;
+        }
+
+        const selectedLocation = document.getElementById('weatherLocation').value;
+        const locationData = weatherLocations[selectedLocation] || weatherLocations.ljubljana;
+
         try {
-            const res = await fetch('/weather/');
+            const res = await fetch(`/weather/?latitude=${locationData.latitude}&longitude=${locationData.longitude}`);
             const data = await res.json();
 
-            document.getElementById('weatherResult').className = 'success';
-            document.getElementById('weatherResult').innerText =
-                `🌡️ Temp: ${data.temperature}°C | ${data.summary}`;
+            const weatherResult = document.getElementById('weatherResult');
+            const weatherDetails = document.getElementById('weatherDetails');
+            const weatherForecast = document.getElementById('weatherForecast');
+            const radarWrapper = document.getElementById('weatherRadarWrapper');
+            const radarImage = document.getElementById('weatherRadar');
+            const radarNote = document.getElementById('radarNote');
+
+            const weatherIcon = getWeatherIcon(data.weather_code);
+            weatherResult.className = 'success';
+            weatherResult.innerText = `📍 ${locationData.name} — ${weatherIcon} ${data.weather_summary || data.summary || 'Vreme'}`;
+
+            weatherDetails.innerHTML = `
+                Temperatura: <strong>${data.temperature ?? 'n/a'}°C</strong><br>
+                Vlažnost: <strong>${data.humidity != null ? data.humidity + '%' : 'n/a'}</strong><br>
+                Možnost dežja: <strong>${data.rain_chance != null ? data.rain_chance + '%' : 'n/a'}</strong><br>
+                Padavine: <strong>${data.precipitation != null ? data.precipitation + ' mm' : 'n/a'}</strong><br>
+                Veter: <strong>${data.wind_speed != null ? data.wind_speed + ' km/h' : 'n/a'}</strong>
+            `;
+
+            if (Array.isArray(data.forecast) && data.forecast.length) {
+                weatherForecast.innerHTML = `
+                    <div><strong>Napoved za naslednje 3 dni</strong></div>
+                    ${data.forecast.slice(0, 3).map(day => `
+                        <div class="forecastCard">
+                            <h4>${new Date(day.date).toLocaleDateString('sl-SI', { weekday: 'short', day: 'numeric', month: 'numeric' })} ${getWeatherIcon(day.weather_code)}</h4>
+                            <div class="muted">${day.temperature_min}°C – ${day.temperature_max}°C</div>
+                            <div>${day.precipitation_probability != null ? 'Dež: ' + day.precipitation_probability + '%' : 'Dež: n/a'}</div>
+                        </div>
+                    `).join('')}
+                `;
+            } else {
+                weatherForecast.innerHTML = '<div class="muted">Napoved za naslednje dni ni na voljo.</div>';
+            }
+
+            if (data.radar_image_url) {
+                radarWrapper.classList.remove('hidden');
+                radarImage.src = data.radar_image_url;
+                radarImage.onerror = () => {
+                    radarWrapper.classList.add('hidden');
+                    radarNote.innerText = 'Radar slika trenutno ni na voljo.';
+                };
+                radarNote.innerText = 'Če je na voljo, je radar slika prikazana zgoraj.';
+            } else {
+                radarWrapper.classList.add('hidden');
+                radarImage.src = '';
+            }
         } catch (err) {
             document.getElementById('weatherResult').className = 'error';
-            document.getElementById('weatherResult').innerText = "❌ Greška pri dohvaćanju vremenske prognoze";
+            document.getElementById('weatherResult').innerText = "❌ Napaka pri pridobivanju vremenskih podatkov.";
+            console.error(err);
         }
+    }
+
+    async function loadEvents() {
+        token = token || localStorage.getItem("token");
+        const eventStatus = document.getElementById('eventStatus');
+        const eventsList = document.getElementById('eventsList');
+
+        if (!token) {
+            setDashboardAccess(false);
+            eventStatus.className = 'error';
+            eventStatus.innerText = "Najprej se prijavi.";
+            eventsList.innerHTML = "";
+            return;
+        }
+
+        const res = await fetch('/events', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+            if (res.status === 401) {
+                logout();
+                return;
+            }
+            eventStatus.className = 'error';
+            eventStatus.innerText = data.message || "Seznama dogodkov ni mogoče naložiti.";
+            return;
+        }
+
+        const events = Array.isArray(data) ? data : [];
+        setDashboardAccess(true);
+        eventStatus.className = 'success';
+        eventStatus.innerText = events.length ? "Dogodki naloženi." : "Ni še načrtovanih dogodkov.";
+
+        if (!events.length) {
+            eventsList.innerHTML = '<div class="muted">Seznam je trenutno prazen.</div>';
+            return;
+        }
+
+        eventsList.innerHTML = events.map(event => `
+            <div class="eventItem">
+                <div>
+                    <strong>${escapeHtml(event.title)}</strong>
+                    <div class="muted">${escapeHtml(event.location)} | ${new Date(event.event_time).toLocaleString()}${event.event_end_time ? ' — do ' + new Date(event.event_end_time).toLocaleString() : ''}</div>
+                    <div>${escapeHtml(event.notes || '')}</div>
+                </div>
+                <button onclick="deleteEvent(${event.id})">Izbriši</button>
+            </div>
+        `).join('');
+    }
+
+    async function createEvent() {
+        token = token || localStorage.getItem("token");
+        const eventStatus = document.getElementById('eventStatus');
+
+        if (!token) {
+            eventStatus.className = 'error';
+            eventStatus.innerText = "Najprej se prijavi.";
+            return;
+        }
+
+        const title = document.getElementById('eventTitle').value.trim();
+        const location = document.getElementById('eventLocation').value.trim();
+        const eventStart = document.getElementById('eventStart').value;
+        const eventEnd = document.getElementById('eventEnd').value;
+        const notes = document.getElementById('eventNotes').value.trim();
+
+        if (!title || !location || !eventStart || !eventEnd) {
+            eventStatus.className = 'error';
+            eventStatus.innerText = "Naslov, lokacija, začetek in konec dogodka so obvezni.";
+            return;
+        }
+
+        const startTime = new Date(eventStart);
+        const endTime = new Date(eventEnd);
+
+        if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
+            eventStatus.className = 'error';
+            eventStatus.innerText = "Prosim izberi veljaven datum in čas za začetek in konec.";
+            return;
+        }
+
+        if (endTime <= startTime) {
+            eventStatus.className = 'error';
+            eventStatus.innerText = "Konec dogodka mora biti po začetku.";
+            return;
+        }
+
+        const payload = {
+            title,
+            location,
+            event_start: startTime.toISOString(),
+            event_end: endTime.toISOString(),
+            notes
+        };
+
+        try {
+            const res = await fetch('/events', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                eventStatus.className = 'error';
+                eventStatus.innerText = data.message || `Dogodka ni mogoče ustvariti (status ${res.status}).`;
+                return;
+            }
+
+            document.getElementById('eventTitle').value = "";
+            document.getElementById('eventLocation').value = "Ljubljana";
+            document.getElementById('eventStart').value = "";
+            document.getElementById('eventEnd').value = "";
+            document.getElementById('eventNotes').value = "";
+            eventStatus.className = 'success';
+            eventStatus.innerText = "Dogodek je bil uspešno shranjen.";
+            await loadEvents();
+        } catch (err) {
+            eventStatus.className = 'error';
+            eventStatus.innerText = "Napaka pri shranjevanju dogodka. Oglej si konzolo za podrobnosti.";
+            console.error(err);
+        }
+    }
+
+    async function deleteEvent(id) {
+        token = token || localStorage.getItem("token");
+
+        await fetch(`/events/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        await loadEvents();
+    }
+
+    function logout() {
+        token = null;
+        currentUser = null;
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        setDashboardAccess(false);
+        const statusDiv = document.getElementById('status');
+        statusDiv.className = 'success';
+        statusDiv.innerText = "Odjavljen.";
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
     }
 
     // Funkcija za upload datoteke na Min.io kroz Storage Service
     async function uploadFile() {
+        if (!ensureAuth()) {
+            return;
+        }
+
         const fileInput = document.getElementById('fileInput');
         const file = fileInput.files[0];
 
@@ -107,6 +527,9 @@
         try {
             const res = await fetch('/storage/upload/', {
                 method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
                 body: formData
             });
 
@@ -125,6 +548,16 @@
             document.getElementById('uploadResult').innerText = "❌ Greška pri uploadu";
             console.error(err);
         }
+    }
+
+    token = localStorage.getItem("token");
+    currentUser = localStorage.getItem("username");
+    if (token && currentUser) {
+        setDashboardAccess(true);
+        setUserBanner(currentUser);
+        loadEvents();
+    } else {
+        setDashboardAccess(false);
     }
 </script>
 

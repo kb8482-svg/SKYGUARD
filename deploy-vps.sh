@@ -1,80 +1,66 @@
 #!/bin/bash
+set -euo pipefail
+
 # SKYGUARD VPS DEPLOYMENT SCRIPT
-# Usage: ssh root@VPS_IP < deploy-vps.sh
+# Usage: DOMAIN=app.pejmoneglejmo.me ./deploy-vps.sh
 
-echo "🚀 SKYGUARD VPS Deployment Script"
-echo "===================================="
+DOMAIN="${DOMAIN:-app.pejmoneglejmo.me}"
+REPO_URL="${REPO_URL:-https://github.com/kb8482-svg/SKYGUARD.git}"
+APP_DIR="${APP_DIR:-/root/SKYGUARD}"
 
-# 1. UPDATE SISTEM
-echo "📦 Ažuriram sistem..."
+echo "SKYGUARD VPS Deployment"
+echo "Domain: ${DOMAIN}"
+
+echo "Updating system packages..."
 apt update && apt upgrade -y
-apt install -y curl git wget
+apt install -y curl git wget openssl certbot
 
-# 2. INSTALIRAJ DOCKER
-echo "🐳 Instaliram Docker..."
-curl -fsSL https://get.docker.com -o get-docker.sh
-sh get-docker.sh
+if ! command -v docker >/dev/null 2>&1; then
+  echo "Installing Docker..."
+  curl -fsSL https://get.docker.com -o get-docker.sh
+  sh get-docker.sh
+fi
 
-# 3. INSTALIRAJ DOCKER COMPOSE
-echo "📋 Instaliram Docker Compose..."
-curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
+if [ ! -d "${APP_DIR}" ]; then
+  echo "Cloning project..."
+  git clone "${REPO_URL}" "${APP_DIR}"
+fi
 
-# 4. KLONIRAJ PROJEKT
-echo "📥 Kloniram projekt sa GitHub..."
-cd /root
-git clone https://github.com/kb8482-svg/SKYGUARD.git
-cd SKYGUARD
+cd "${APP_DIR}"
 
-# 5. KREIRAJ .env FILE ZA PRODUCTION
-echo "⚙️ Kreiram production environment..."
-cat > .env.production << 'ENVFILE'
-# SKYGUARD Production Config
-DOMAIN=pejmoneglejmo.me
+echo "Creating production environment file..."
+POSTGRES_PASSWORD="$(openssl rand -base64 32)"
+cat > .env.production << ENVFILE
+DOMAIN=${DOMAIN}
 POSTGRES_USER=skyguard_user
-POSTGRES_PASSWORD=$(openssl rand -base64 32)
+POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 POSTGRES_DB=skyguard_auth
 MINIO_ROOT_USER=user-04
 MINIO_ROOT_PASSWORD=thestrongestavajePass04
 ENVFILE
 
-# 6. KREIRAJ PRODUCTION DOCKER-COMPOSE
-echo "🔧 Priprema docker-compose za production..."
-# Production će koristiti existing docker-compose.yaml
+echo "Requesting Let's Encrypt certificate..."
+echo "Cloudflare DNS for ${DOMAIN} must point to this VPS before this step."
+if [ ! -f "/etc/letsencrypt/live/${DOMAIN}/fullchain.pem" ]; then
+  certbot certonly --standalone -d "${DOMAIN}" --agree-tos --register-unsafely-without-email --non-interactive
+fi
 
-# 7. POKRENITE SERVISE
-echo "▶️  Pokrenjem servise..."
-docker-compose up -d
+echo "Starting SKYGUARD production stack..."
+docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d --build
 
-# 8. ČEKAJ DA SE SERVISI PODIGUNJE
-echo "⏳ Čekam servise (30 sekundi)..."
+echo "Waiting for services..."
 sleep 30
 
-# 9. PROVJERA ZDRAVLJA
-echo "🏥 Proverim zdravlje servisa..."
-curl -s http://localhost:8000/ > /dev/null && echo "✅ API Gateway OK" || echo "❌ API Gateway problem"
-
-# 10. SETUP SSL SA CERTBOT
-echo "🔒 Postavljam SSL certifikat sa Let's Encrypt..."
-apt install -y certbot python3-certbot-nginx
-
-# NOTA: Trebate ručno pokrenuti:
-# certbot certonly --standalone -d pejmoneglejmo.me -d www.pejmoneglejmo.me
+echo "Checking HTTPS..."
+curl -s "https://${DOMAIN}/" > /dev/null && echo "HTTPS OK" || echo "HTTPS check failed"
 
 echo ""
-echo "═══════════════════════════════════════════════"
-echo "✅ DEPLOYMENT GOTOV!"
-echo "═══════════════════════════════════════════════"
+echo "Deployment complete."
+echo "App: https://${DOMAIN}/"
 echo ""
-echo "🌐 Aplikacija je dostupna na:"
-echo "   http://pejmoneglejmo.me:8000/"
+echo "Cloudflare settings:"
+echo "  SSL/TLS encryption mode: Full (strict)"
+echo "  Always Use HTTPS: On"
 echo ""
-echo "📊 Min.io Console:"
-echo "   http://pejmoneglejmo.me:9001/"
-echo ""
-echo "🔧 Sljedeći koraci:"
-echo "   1. Dodaj DNS A record u Cloudflare"
-echo "   2. Pokrenite SSL setup:"
-echo "      certbot certonly --standalone -d pejmoneglejmo.me"
-echo "   3. Ažuriraj nginx config sa SSL certifikatom"
-echo ""
+echo "Renewal:"
+echo "  certbot renew && cd ${APP_DIR} && docker compose -f docker-compose.yaml -f docker-compose.prod.yaml restart nginx_proxy"

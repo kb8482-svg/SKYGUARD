@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
 
   postgres-db:
@@ -21,6 +19,12 @@ services:
   user-service:
     build: ./user-service
     container_name: user-service
+    environment:
+      POSTGRES_HOST: postgres-db
+      POSTGRES_USER: skyguard_user
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: skyguard_auth
+      JWT_SECRET: skyguard-secret
     expose:
       - "5001"
     depends_on:
@@ -39,6 +43,8 @@ services:
     container_name: storage-service
     expose:
       - "5003"
+    depends_on:
+      - minio
 
   frontend:
     build: ./frontend
@@ -77,6 +83,16 @@ services:
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - nginx_proxy
 
 volumes:
   postgres_data:
